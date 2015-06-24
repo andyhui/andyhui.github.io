@@ -1,0 +1,429 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>为多态基类声明virtual析构函数 | Study for every day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Andy hui">
+    
+
+    
+    <meta name="description" content="这个问题在实践中偶尔会碰到，设计一个TimeKeeper基类和一些派生类来记录时间：
+12345678 class TimeKeeper  &amp;#123;  　 public:  　　 TimeKeeper();  　　 ~TimeKeeper();　　  &amp;#125;; class AtomicClock: public TimeKeeper &amp;#123;&amp;#125;; //原子钟  class">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为多态基类声明virtual析构函数">
+<meta property="og:url" content="http://yoursite.com/2012/07/23/为多态基类声明virtual析构函数/index.html">
+<meta property="og:site_name" content="Study for every day">
+<meta property="og:description" content="这个问题在实践中偶尔会碰到，设计一个TimeKeeper基类和一些派生类来记录时间：
+12345678 class TimeKeeper  &amp;#123;  　 public:  　　 TimeKeeper();  　　 ~TimeKeeper();　　  &amp;#125;; class AtomicClock: public TimeKeeper &amp;#123;&amp;#125;; //原子钟  class">
+<meta property="og:updated_time" content="2015-06-24T15:33:43.664Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="为多态基类声明virtual析构函数">
+<meta name="twitter:description" content="这个问题在实践中偶尔会碰到，设计一个TimeKeeper基类和一些派生类来记录时间：
+12345678 class TimeKeeper  &amp;#123;  　 public:  　　 TimeKeeper();  　　 ~TimeKeeper();　　  &amp;#125;; class AtomicClock: public TimeKeeper &amp;#123;&amp;#125;; //原子钟  class">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Study for every day" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="Study for every day" title="Study for every day"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Study for every day">Study for every day</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2012/07/23/为多态基类声明virtual析构函数/" title="为多态基类声明virtual析构函数" itemprop="url">为多态基类声明virtual析构函数</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Andy hui" target="_blank" itemprop="author">Andy hui</a>
+		
+  <p class="article-time">
+    <time datetime="2012-07-22T16:27:32.000Z" itemprop="datePublished"> 发表于 2012-07-23</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			
+		
+		</div>
+		
+		<p>这个问题在实践中偶尔会碰到，设计一个TimeKeeper基类和一些派生类来记录时间：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">class</span> TimeKeeper  </span><br><span class="line">&#123;  </span><br><span class="line">　 <span class="keyword">public</span>:  </span><br><span class="line">　　 TimeKeeper();  </span><br><span class="line">　　 ~TimeKeeper();　　  </span><br><span class="line">&#125;; </span><br><span class="line"><span class="keyword">class</span> AtomicClock: <span class="keyword">public</span> TimeKeeper &#123;&#125;; <span class="comment">//原子钟  </span></span><br><span class="line"><span class="keyword">class</span> WaterClock: <span class="keyword">public</span> TimeKeeper &#123;&#125;; <span class="comment">//水钟</span></span><br></pre></td></tr></table></figure>
+<p>在使用时，我们可能会使用factory工厂方法：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TimeKeeper* getTimeKeeper();<span class="comment">//返回一个指针，指向一个派生类的动态分配的对象 </span></span><br><span class="line">TimeKeeper* ptk = getTimeKeeper();<span class="comment">//从继承体系中得到一个动态分配对象</span></span><br><span class="line"><span class="keyword">delete</span> ptk;<span class="comment">//负责的删除它</span></span><br></pre></td></tr></table></figure></p>
+<p>删除的时候就会出现问题，因为ptk这个指针指向的是基类，那删除的指令会执行基类TimeKeeper的析构函数，该函数不是virtual函数。<br>在c++中，这样的情况下其删除行为没有被定义，一般会只删除基类的成分，而派生类的那些元素没有被删除，这就是形成资源泄露，败坏数据结构，在调试器上浪费很多时间的绝佳途径哦。<br>解决的方法就是定义一个基类的virtual析构函数，这样一来，删除行为就会在派生类中实现，不会只删除一部分。<br>一般来说，只要类中有virtual函数，就要定义一个virtual析构函数。不过，如果类中没有virtual函数，就不需要也不应该定义virtual析构函数，这样不仅没用，而且也会增加额外开支，且会产生很多的兼容性问题，因为virtual机制是c++特有的。<br>另外，c++中很多类的实现都是不带virtual的，比如：string，STL中的vector，list，set，trl：：unordered_map，如果继承它们很可能出现上述的错误，所以作者提醒大家：拒绝继承标准容器或者其它只有非virtual析构函数的类！<br>有时候你希望拥有抽象class，但手上没有任何pure virtual函数，怎么办？由于抽象class总是企图被当做一个base class来用，而又由于base class应该有一个virtual析构函数，并且由于pure virtual函数会导致抽象class，因此解决办法很简单：为你希望它成为抽象的那个class声明一个pure virtual析构函数。下面是例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Awov&#123;  </span><br><span class="line"><span class="keyword">public</span>:  </span><br><span class="line">  <span class="keyword">virtual</span> ~Awov() = <span class="number">0</span>;  </span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总结：polymorphic base classes 应该声明一个virtual析构函数。如果class带有任何virtual函数，它就应该拥有一个virtual析构函数。<br>classes的设计目的如果不是作为base classes使用，或不是为了具备多态性质，就不应该声明virtual析构函数。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/c/">c++</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2012/07/23/为多态基类声明virtual析构函数/" data-title="为多态基类声明virtual析构函数 | Study for every day" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2013/02/26/析构-构造-赋值运算/" title="析构/构造/赋值运算">
+  <strong>上一篇：</strong><br/>
+  <span>
+  析构/构造/赋值运算</span>
+</a>
+</div>
+
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/c/" title="c++">c++<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/linux/" title="linux">linux<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/python/" title="python">python<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/shell/" title="shell">shell<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://coolshell.cn/" target="_blank" title="酷客">酷客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark&#39;s Blog">Jark&#39;s Blog</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m Larry Page in Google. <br/>
+			This is my blog,believe it or not.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Andy hui">Andy hui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
