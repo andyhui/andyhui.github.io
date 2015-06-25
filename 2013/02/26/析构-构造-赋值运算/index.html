@@ -206,13 +206,12 @@
       
 
       
-        <p>别让异常逃离析构函数：</p>
-<p>析构函数绝对不要吐出异常，如果一个被析构函数调用的函数可能抛出异常，析构函数应该捕获任何异常，然后吞下他们（不传播）或结束程序。</p>
+        <h3 id="别让异常逃离析构函数：">别让异常逃离析构函数：</h3><p>析构函数绝对不要吐出异常，如果一个被析构函数调用的函数可能抛出异常，析构函数应该捕获任何异常，然后吞下他们（不传播）或结束程序。</p>
 <p>如果客户需要对某个操作函数运行期间抛出的异常做出反应，那么class应该提供一个普通函数（而非在析构函数中）执行该操作。</p>
 <p>绝不在构造函数和析构函数中调用virtual函数：</p>
 <p>不在构造函数和析构函数中调用virtual函数，因为这类调用从不下降至derived class（比起当前构造函数和析构函数那层）。<br>令operator=返回一个reference to *this。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Widget&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Widget&amp; <span class="keyword">operator</span>= (<span class="keyword">const</span> Widget&amp; rhs)&#123;</span><br><span class="line">        ....</span><br><span class="line">        <span class="keyword">return</span>* <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>复制对象时勿忘其每一个成分<br>copying函数应该确保复制“对象内的所有成员变量”及“所有base class成分”</p>
+<h3 id="复制对象时勿忘其每一个成分">复制对象时勿忘其每一个成分</h3><p>copying函数应该确保复制“对象内的所有成员变量”及“所有base class成分”</p>
 <p>不要尝试以某个copying函数实现另一个copying函数。应该将共同技能放进第三个函数中，并由两个copying函数共同调用。</p>
 
       
@@ -361,7 +360,7 @@
           <div class="post-toc">
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#别让异常逃离析构函数："><span class="nav-number">1.</span> <span class="nav-text">别让异常逃离析构函数：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制对象时勿忘其每一个成分"><span class="nav-number">2.</span> <span class="nav-text">复制对象时勿忘其每一个成分</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
