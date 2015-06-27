@@ -278,7 +278,7 @@
 <p>slab层示意图：<br><img src="/img/slab.png" alt="缓存区，slab及对象之间的关系" title="slab简介"></p>
 <h2 id="系统内存查看">系统内存查看</h2><ul>
 <li>free(这个命令比较简单，以后有时间再详细解释)</li>
-<li>cat /proc/buddyinfo<br><img src="/img/buddyinfo.png" alt="buddyinfo" title="buddyinfo"><br>其中每一列的数字代表此链表块中包含的可用的块数。例如ZONE_DMA，有90个可用的 2^0<em>PAGE_SIZE大小的页。有6个可用的2^1</em>PAGE_SIZE大小的页。有2个可用的2^2*PAGE_SIZE大小的页。再32位系统PAGE_SIZE为４K.</li>
+<li>cat /proc/buddyinfo<br><img src="/img/buddyinfo.png" alt="buddyinfo" title="buddyinfo"><br>其中每一列的数字代表此链表块中包含的可用的块数。例如ZONE_DMA，有90个可用的2^0<em>PAGE_SIZE大小的页。有6个可用的2^1</em>PAGE_SIZE大小的页。有2个可用的2^2*PAGE_SIZE大小的页。再32位系统PAGE_SIZE为４K.</li>
 </ul>
 <h2 id="总结">总结</h2><p>Linux内核内存管理博大精深，需要深入探索，以上只是基础理论知识，以后深入。并且大部分参考的是《linux内核设计与实现》，《深入理解linux内核》。</p>
 
