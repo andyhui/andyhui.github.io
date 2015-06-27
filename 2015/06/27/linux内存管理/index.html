@@ -24,7 +24,7 @@
 
 
 
-  <meta name="keywords" content="linux,shell," />
+  <meta name="keywords" content="linux," />
 
 
 
@@ -47,7 +47,7 @@
 
 
 
-  <title> shell script & 正则表达式 // August' blog </title>
+  <title> linux内存管理 // August' blog </title>
 </head>
 
 <body>
@@ -176,7 +176,7 @@
           
           
             
-              shell script & 正则表达式
+              linux内存管理
             
           
         </h1>
@@ -184,7 +184,7 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015-04-19
+          发表于 2015-06-27
         </span>
 
         
@@ -204,8 +204,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/04/19/shell-script-正则表达式/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/19/shell-script-正则表达式/"></span>
+            <a href="/2015/06/27/linux内存管理/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/27/linux内存管理/"></span>
             </a>
           </span>
           
@@ -219,9 +219,36 @@
       
 
       
-        <h3 id="例子">　例子</h3><p><strong>1.取出ifconfig中ip地址与bcast地址：</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ifconfig eth0 | grep <span class="string">"inet add"</span> | sed -r <span class="string">'s/(.*).*inet addr:(.*|[^ ])Bcast:(.*)Mask:.*/\2:\3/'</span></span><br></pre></td></tr></table></figure></p>
-<p><strong>2.统计命令执行结果的行数</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ find /etc/ -type f | wc <span class="operator">-l</span>     <span class="comment">#统计/etc/下文件的个数</span></span><br><span class="line"></span><br><span class="line">$ find /etc/ -type f -name <span class="string">"*sys*"</span>  | wc <span class="operator">-l</span>  <span class="comment">#统计文件名中带有sys的文件数</span></span><br><span class="line"></span><br><span class="line">$ find /etc/ -type f -exec grep <span class="string">'sys'</span> &#123;&#125; /; | wc <span class="operator">-l</span>   <span class="comment">#统计/etc/目录下，带有sys内容的行数</span></span><br><span class="line"></span><br><span class="line">$ find /etc/ -type f -name <span class="string">"*sys*"</span> | awk <span class="string">'END&#123;print NR&#125;'</span>  <span class="comment">#统计文件名中带有sys的文件数</span></span><br><span class="line"></span><br><span class="line">$ find /etc/ -type f -exec grep <span class="string">"sys"</span> &#123;&#125; /; | awk <span class="string">'END&#123;print NR&#125;'</span>  <span class="comment">#统计/etc目录下，带有sys内容的行数</span></span><br></pre></td></tr></table></figure></p>
-<p><strong>3.将/etc/termcap内容取出后，去除开头为#的行，取出空白行，取出开头为英文字母的那几行以及最终统计总行数：</strong><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cat /ect/termcap | sed &#39;/^#/d&#39; | sed &#39;/^$/d&#39; | grep -n &#39;^[a-zA-Z]&#39; | awk &#39;END&#123;print NR&#125;&#39;</span><br></pre></td></tr></table></figure></p>
+        <h2 id="基础概念">基础概念</h2><ul>
+<li>页<br>内核把物理页作为内存管理的基本单元。不同的体系结构支持的页大小不同。大多数32位操作系统页的大小为４KB，而64位体系结构一般支持８KB的页。例如在支持４KB的系统中１Ｇ物理内存有262144个页。每个页都有一个struct page结构，就算占40Bytes，假设系统物理页大小为8KB，系统有４G，则系统中共有524288个页，描述这么多页总共消耗才20MB。<a id="more"></a></li>
+<li>区<br>由于硬件的原因，内核不可能对所有的页一视同仁，有些页位于特定的物理地址上，不能用于一些特定的任务。因此内核把页划分为不同的区。内核使用区对具有相似特性的页进行分组。Linux主要有四种区：<br>| 区 | 描述 | 物理内存 |<br>|:———: | :———: | :———: |<br>| ZONE_DMA | DMA使用的页  |  小于16MB |<br>| ZONE_DMA32 | DMA使用的页，但只能是32位设备　| |<br>| ZONE_NORMAL | 正常可寻址的页　|　16~896MB |<br>| ZONE_HIGHEM | 动态映射的页 | 大于896MB |</li>
+</ul>
+<h2 id="buddy算法">buddy算法</h2><p>内核应该为分配一组连续的页建立一种稳定高效的分配策略。为此必须解决内存分配的外碎片问题。从本质上说解决外碎片的方法有两种：</p>
+<ul>
+<li>利用分页单元把一组非连续的空闲页映射到连续的线性地址。</li>
+<li><p>用一种方法记录当前空闲连续页的情况，以尽量避免为满足小块的请求而分割大的空闲块。<br>由于以下两个原因，linux选择第二个方法：</p>
+</li>
+<li><p>一些情况下连续的内存地址无法满足要求，物理上连续的页是必须满足的要求，例如请求内存给DMA处理器分配缓冲。因为DMA是忽略分页单元直接访问地址总线的。</p>
+</li>
+<li>即使连续的页不是很必要，但是不连续的页的频繁访问必然导致页表的频繁修改，这必将导致平均访问内存次数的增加，因为这会使CPU频繁地刷新TLB(Translation Lookaside Buffer)的内容。<br>Linux采用著名的buddy算法来解决外部碎片问题：把所有的空闲页分组为10个块链表，每个链表块分别包含的页的个数为：1,2,4,8,16,32,64,128,256,512。每块的第一个页的物理地址应该是该块大小的整数倍。例如，大小为16个页的块第一个页的物理地址应该是16*4K的整数倍。<br>举个例子来说明buddy算法：假设要请求一个128页的块，该算法先在包含128个页的块链表中查找是否有空闲的块。如果没有这样的块，会查找下一个更大的块。也就是包含256个页的链表块中查找空闲块。如果存在这样的块，就把256个页分为两等份，一份满足请求使用，一份插入128个页的链表块中，如果在256的页链表块中还没找到就到512页的块链表中查找空闲块，如果找到，就分配128页满足请求，然后拿256个页插入到包含256个页的链表块中，剩下的128页插入到包含128页的链表块中。如果在512链表页块中还没找到，则报错。<br>以上的逆过程就是页的释放过程，由内核试图把大小为ｂ的一对空闲伙伴块合并为一个大小为2b的单独块。满足以下条件的两个块为伙伴：</li>
+<li>两个块具有相同的大小，记为b</li>
+<li>它们的物理地址是连续的。</li>
+<li><p>地一块的第一个页的物理地址是２<em>b</em>212的倍数。<br>该算法是迭代的，如果它成功的合并所释放的块，它会试图合并2b大小的块来形成更大的块。</p>
+<h2 id="slab">slab</h2><p>分配和释放数据结构是内核中最普遍的操作之一。为了便于数据的频繁分配和回收，linux使用空闲链表。空闲链表包括可以使用的，已经分配好的数据结构块。空闲链表相当于对象高速缓存－快速存储频繁使用的对象类型。<br>linux的slab层的设计考虑到的因素：</p>
+</li>
+<li><p>频繁使用的数据结构也会频繁分配和释放，因此应当缓存它们。</p>
+</li>
+<li>频繁分配和回收必然会导致内存碎片（内部碎片）。为了避免这种情况，空闲链表的缓存会连续的存放，因为已释放的数据结构又会放回空闲链表，因此不会导致碎片。</li>
+<li>回收的对象可以立即投入到下次分配，因此，对于频繁分配和释放，空闲链表能提高其性能。</li>
+<li>对存放的对象进行着色，以防止多个对象映射到相同的高速缓存。</li>
+<li>如果slab分配器知道对象大小，页大小，总的高速缓存的大小的概念，它会做出更明智的决策。</li>
+</ul>
+<p>slab层示意图：<br><img src="/pictures/slab.png" alt="缓存区，slab及对象之间的关系" title="slab简介"></p>
+<h2 id="系统内存查看">系统内存查看</h2><ul>
+<li>free(这个命令比较简单，以后有时间再详细解释)</li>
+<li>cat /proc/buddyinfo<br><img src="/pictures/buddyinfo.png" alt="buddyinfo" title="buddyinfo"><br>其中每一列的数字代表此链表块中包含的可用的块数。例如ZONE_DMA，有90个可用的 2^0<em>PAGE_SIZE大小的页。有6个可用的2^1</em>PAGE_SIZE大小的页。有2个可用的2^2*PAGE_SIZE大小的页。再32位系统PAGE_SIZE为４K.</li>
+</ul>
+<h2 id="总结">总结</h2><p>Linux内核内存管理博大精深，需要深入探索，以上只是基础理论知识，以后深入。并且大部分参考的是《linux内核设计与实现》，《深入理解linux内核》。</p>
 
       
     </div>
@@ -232,8 +259,6 @@
           
             <a href="/tags/linux/"> #linux </a>
           
-            <a href="/tags/shell/"> #shell </a>
-          
         </div>
       
 
@@ -241,13 +266,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/05/26/linux-top/">linux常用命令-top</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/04/16/study-python/">study python</a>
+              <a href="/2015/06/26/awk使用/">awk使用</a>
             
           </div>
         </div>
@@ -267,8 +290,8 @@
     
       <div class="comments" id="comments">
         
-          <div class="ds-thread" data-thread-key="2015/04/19/shell-script-正则表达式/"
-               data-title="shell script & 正则表达式" data-url="http://yoursite.com/2015/04/19/shell-script-正则表达式/">
+          <div class="ds-thread" data-thread-key="2015/06/27/linux内存管理/"
+               data-title="linux内存管理" data-url="http://yoursite.com/2015/06/27/linux内存管理/">
           </div>
         
       </div>
@@ -396,7 +419,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">1.</span> <span class="nav-text">　例子</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础概念"><span class="nav-number">1.</span> <span class="nav-text">基础概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buddy算法"><span class="nav-number">2.</span> <span class="nav-text">buddy算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#slab"><span class="nav-number">3.</span> <span class="nav-text">slab</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统内存查看"><span class="nav-number">4.</span> <span class="nav-text">系统内存查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
