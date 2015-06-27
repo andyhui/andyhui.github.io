@@ -381,11 +381,11 @@
         
           <h3 id="top命令使用">top命令使用</h3><p>不多说，直接上例子：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">top -d 1 -p pid \[,pid...\]</span><br></pre></td></tr></table></figure></p>
 <p>其中d表示延迟多少，例子中表示延迟1秒，pid表示进程id号。<br>可以选择按用户查看内存使用，或者cpu使用情况，例如：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">top -u root</span><br></pre></td></tr></table></figure></p>
-<p>常用的排序选项：<br>N：按pid排序<br>P：按cpu使用率从大到小<br>M：按内存使用率从大到小<br>T：按TIME+排序</p>
-<p>类似的静态查看内存使用状况的命令有：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pmap pid&#10;ps aux | grep processname</span><br></pre></td></tr></table></figure></p>
-<p>网上有这种写法的：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -eo &#39;pid,comm,args,pcpu,rsz,vsz,stime,user,uid&#39; | grep vmware |  sort -nrk5</span><br></pre></td></tr></table></figure></p>
-<p>其中sort的参数<br>n表示按照数值排序。<br>k5表示按第5列排序，这个例子中即rsz(实际内存)。<br>r表示按降序排，sort本来是按升序来排序的。用r参数表示按降序排。</p>
-
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/05/26/linux-top/#more">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
