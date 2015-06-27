@@ -221,8 +221,39 @@
       
         <h2 id="基础概念">基础概念</h2><ul>
 <li>页<br>内核把物理页作为内存管理的基本单元。不同的体系结构支持的页大小不同。大多数32位操作系统页的大小为４KB，而64位体系结构一般支持８KB的页。例如在支持４KB的系统中１Ｇ物理内存有262144个页。每个页都有一个struct page结构，就算占40Bytes，假设系统物理页大小为8KB，系统有４G，则系统中共有524288个页，描述这么多页总共消耗才20MB。<a id="more"></a></li>
-<li>区<br>由于硬件的原因，内核不可能对所有的页一视同仁，有些页位于特定的物理地址上，不能用于一些特定的任务。因此内核把页划分为不同的区。内核使用区对具有相似特性的页进行分组。Linux主要有四种区：<br>| 区 | 描述 | 物理内存 |<br>|:———: | :———: | :———: |<br>| ZONE_DMA | DMA使用的页  |  小于16MB |<br>| ZONE_DMA32 | DMA使用的页，但只能是32位设备　| |<br>| ZONE_NORMAL | 正常可寻址的页　|　16~896MB |<br>| ZONE_HIGHEM | 动态映射的页 | 大于896MB |</li>
+<li>区<br>由于硬件的原因，内核不可能对所有的页一视同仁，有些页位于特定的物理地址上，不能用于一些特定的任务。因此内核把页划分为不同的区。内核使用区对具有相似特性的页进行分组。Linux主要有四种区：</li>
 </ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">区</th>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">物理内存</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ZONE_DMA</td>
+<td style="text-align:center">DMA使用的页</td>
+<td style="text-align:center">小于16MB</td>
+</tr>
+<tr>
+<td style="text-align:center">ZONE_DMA32</td>
+<td style="text-align:center">DMA使用的页，但只能是32位设备　</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">ZONE_NORMAL</td>
+<td style="text-align:center">正常可寻址的页　</td>
+<td style="text-align:center">　16~896MB</td>
+</tr>
+<tr>
+<td style="text-align:center">ZONE_HIGHEM</td>
+<td style="text-align:center">动态映射的页</td>
+<td style="text-align:center">大于896MB</td>
+</tr>
+</tbody>
+</table>
 <h2 id="buddy算法">buddy算法</h2><p>内核应该为分配一组连续的页建立一种稳定高效的分配策略。为此必须解决内存分配的外碎片问题。从本质上说解决外碎片的方法有两种：</p>
 <ul>
 <li>利用分页单元把一组非连续的空闲页映射到连续的线性地址。</li>
@@ -243,10 +274,10 @@
 <li>对存放的对象进行着色，以防止多个对象映射到相同的高速缓存。</li>
 <li>如果slab分配器知道对象大小，页大小，总的高速缓存的大小的概念，它会做出更明智的决策。</li>
 </ul>
-<p>slab层示意图：<br><img src="/pictures/slab.png" alt="缓存区，slab及对象之间的关系" title="slab简介"></p>
+<p>slab层示意图：<br><img src="../pictures/slab.png" alt="缓存区，slab及对象之间的关系" title="slab简介"></p>
 <h2 id="系统内存查看">系统内存查看</h2><ul>
 <li>free(这个命令比较简单，以后有时间再详细解释)</li>
-<li>cat /proc/buddyinfo<br><img src="/pictures/buddyinfo.png" alt="buddyinfo" title="buddyinfo"><br>其中每一列的数字代表此链表块中包含的可用的块数。例如ZONE_DMA，有90个可用的 2^0<em>PAGE_SIZE大小的页。有6个可用的2^1</em>PAGE_SIZE大小的页。有2个可用的2^2*PAGE_SIZE大小的页。再32位系统PAGE_SIZE为４K.</li>
+<li>cat /proc/buddyinfo<br><img src="../pictures/buddyinfo.png" alt="buddyinfo" title="buddyinfo"><br>其中每一列的数字代表此链表块中包含的可用的块数。例如ZONE_DMA，有90个可用的 2^0<em>PAGE_SIZE大小的页。有6个可用的2^1</em>PAGE_SIZE大小的页。有2个可用的2^2*PAGE_SIZE大小的页。再32位系统PAGE_SIZE为４K.</li>
 </ul>
 <h2 id="总结">总结</h2><p>Linux内核内存管理博大精深，需要深入探索，以上只是基础理论知识，以后深入。并且大部分参考的是《linux内核设计与实现》，《深入理解linux内核》。</p>
 
