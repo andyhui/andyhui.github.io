@@ -1,0 +1,635 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
+
+
+    <meta name="description" content="linux，系统技术，网络，服务器技术，互联网" />
+
+
+
+  <meta name="keywords" content="c++ 编程," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'post'
+  };
+</script>
+
+
+
+
+  <title> c++11的几个新特性介绍 // August' blog </title>
+</head>
+
+<body>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">August' blog</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<div class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/">
+            <i class="menu-item-icon icon-home"></i> <br />
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            <i class="menu-item-icon icon-categories"></i> <br />
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            <i class="menu-item-icon icon-archives"></i> <br />
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            <i class="menu-item-icon icon-tags"></i> <br />
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            <i class="menu-item-icon icon-about"></i> <br />
+            关于
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+<form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'GmXxjKWhJGt6ACfvkiRo','2.0.0');
+</script>
+
+<div class="site-search-toggle"></div>
+    </div>
+  
+</div>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              c++11的几个新特性介绍
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015-07-07
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/07/07/c-11的几个新特性介绍/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/07/c-11的几个新特性介绍/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <p>这边文章主要讨论c++11的一些新的有用的特性，作为一个c++程序员应该掌握这些c++11的特点。很多新增加的特点在实际编程中加以运用可以提高编程的效率。还可以提高程序的安全性。c++11相对于c++98做了很多修改，增加了很多有用的东西，不可能每个都讲清楚，这边文章只是选取了其中我认为比较重要的，有用的提一提。</p>
+<h1 id="auto">auto</h1><p>传统的c++中auto表示变量为自动存储，几乎没啥作用，它主要是指出当前变量为局部自动变量。在c++11中，将它用于自动类型推断。需要显式的初始化，以便编译器可以自动推断它的类型。eg:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> i = <span class="number">42</span> <span class="comment">// i 为int型</span></span><br><span class="line"><span class="keyword">auto</span> il = <span class="number">42L</span>L <span class="comment">// il 为long long 型</span></span><br><span class="line"><span class="keyword">auto</span> p = <span class="keyword">new</span> foo() <span class="comment">// p 为函数指针foo()*</span></span><br></pre></td></tr></table></figure></p>
+<p>使用auto可以简化代码，例如，在遍历STL容器的时候，使用auto可以避免写很长的容器迭代器类型。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>,<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &gt; <span class="built_in">map</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">auto</span> p = begin(<span class="built_in">map</span>);p != end(<span class="built_in">map</span>);p++)</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>一般来说auto不应该作为函数的返回值，但是像下面的例子一样来使用，auto做为函数的返回值，eg:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">f2</span><span class="params">(<span class="keyword">double</span>,<span class="keyword">int</span>)</span> -&gt; <span class="keyword">double</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T1,<span class="keyword">typename</span> T2&gt;</span><br><span class="line"><span class="keyword">auto</span> <span class="title">compose</span><span class="params">(T1 t1,T2,t2)</span> -&gt; <span class="title">decltype</span><span class="params">(t1 + t2)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> t1 + t2;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">auto</span> v = compose(<span class="number">2</span>,<span class="number">3.14</span>) <span class="comment">// v的类型是double</span></span><br></pre></td></tr></table></figure></p>
+<p>&lt;—- more —-&gt;</p>
+<h1 id="nullptr">nullptr</h1><p>0表示空指针，但是这个有个缺点就是0也表示整形变量。在c++11中引入nullptr这个关键字。使用nullptr可以提高程序安全性，例如，可将0传递给可接受int类型参数的函数，但是你若将nullptr类型的指针传给这个函数，会报错。下面是几个使用nullptr的例子：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span>* p)</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bar</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p)</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span>* p1 = NULL;</span><br><span class="line"><span class="keyword">int</span>* p2 = <span class="keyword">nullptr</span>;   </span><br><span class="line"><span class="keyword">if</span>(p1 == p2)</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo(<span class="keyword">nullptr</span>);</span><br><span class="line">bar(<span class="keyword">nullptr</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> f = <span class="keyword">nullptr</span>;</span><br><span class="line"><span class="keyword">int</span> i = <span class="keyword">nullptr</span>; <span class="comment">// 错误: nullptr可以转换为bool型，或者用强制类型转换为int型。</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="decltype">decltype</h1><p>关键字decltype将变量的类型申明为表达式的类型，例如下面这个例子是让y的类型与x的类型相同：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">decltype</span>(x) y;</span><br></pre></td></tr></table></figure></p>
+<p>这在定于模板的时候特别有用，因为一般模板是要等到被实例化的时候才知道类型的，例如：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T1,<span class="keyword">typename</span> T2&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fun</span><span class="params">(T1 t1, T2 t2)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">decltype</span>(t1*t2) t3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="Range-based_for_loops">Range-based for loops</h1><p>在c++11中，for循环变得很简单，当你不关心数组，或者容器的大小，下标，迭代器的时候，可以使用如下的for循环:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>,<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &gt;<span class="built_in">map</span>;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v;</span><br><span class="line">v.push_back(<span class="number">1</span>);</span><br><span class="line">v.push_back(<span class="number">2</span>);</span><br><span class="line">v.push_back(<span class="number">3</span>);</span><br><span class="line"><span class="built_in">map</span>[<span class="string">"one"</span>] = v;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span>&amp; kvp : <span class="built_in">map</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; kvp.first &lt;&lt; <span class="built_in">std</span>::endl;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> v : kvp.second)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; v &lt;&lt; <span class="built_in">std</span>::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> arr[] = &#123;<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">9</span>&#125;;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span>&amp; e : arr)</span><br><span class="line">&#123;</span><br><span class="line">    e = e*e;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="Strongly-typed_enums">Strongly-typed enums</h1><p>强类型枚举，在传统的c++中枚举变量，枚举变量的作用域为枚举定义所属的区域，这会使得在同一个区域里不能使用相同的枚举名，c++11修改了这个缺陷，使用强类型枚举.eg:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="keyword">class</span> Options&#123;None,One,ALL&#125;;</span><br><span class="line">Options o = Options::ALL;</span><br><span class="line"><span class="keyword">enum</span> <span class="keyword">class</span> New1&#123;never,sometimes,often,always&#125;;</span><br><span class="line"><span class="keyword">enum</span> <span class="keyword">class</span> New2&#123;never,lever,server&#125;;</span><br><span class="line">New1::never ,New2::nerver</span><br></pre></td></tr></table></figure></p>
+<h1 id="Smart_pointers">Smart pointers</h1><p>有三种只能指针：unique_ptr,shared_ptr,weak_ptr.<br>unique_ptr:分配的内存资源不被共享的时候使用，但是可以转移内存资源给其他unique_ptr变量（move）<br>shared_ptr:分配的内存资源被多个对象共享。<br>weak_ptr:shared_ptr管理的内存对象的一个引用，但是不包含shared_ptr对象的计数。<br>//待续。</p>
+<h1 id="Lambdas">Lambdas</h1><h1 id="non-member_begin()_and_end()">non-member begin() and end()</h1><h1 id="Move_semantics">Move semantics</h1><h1 id="static_assert_and_type_traits">static_assert and type traits</h1><h1 id="Override_and_final">Override and final</h1>
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/c-编程/"> #c++ 编程 </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/06/27/linux内存管理/">linux内存管理</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2015/07/07/c-11的几个新特性介绍/"
+               data-title="c++11的几个新特性介绍" data-url="http://yoursite.com/2015/07/07/c-11的几个新特性介绍/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/jluhui.jpg" alt="August" />
+          <p class="site-author-name">August</p>
+        </div>
+        <p class="site-description motion-element">linux，系统技术，网络，服务器技术，互联网</p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/andyhui" target="_blank">Github</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://weibo.com/jluhui" target="_blank">Weibo</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/jluhui" target="_blank">Zhihu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            <p class="site-author-name">Links</p>
+            
+              <span class="links-of-author-item">
+              <a href="http://macshuo.com/" target="_blank">MacTalk</a>
+              </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.drbunsen.org/" target="_blank">DR.BUNSEN</a>
+              </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://coolshell.cn/" target="_blank">酷壳</a>
+              </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://blog.yufeng.info/" target="_blank">系统技术非业余研究</a>
+              </span>
+            
+          
+        </div>
+        
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#auto"><span class="nav-number">1.</span> <span class="nav-text">auto</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nullptr"><span class="nav-number">2.</span> <span class="nav-text">nullptr</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#decltype"><span class="nav-number">3.</span> <span class="nav-text">decltype</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Range-based_for_loops"><span class="nav-number">4.</span> <span class="nav-text">Range-based for loops</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Strongly-typed_enums"><span class="nav-number">5.</span> <span class="nav-text">Strongly-typed enums</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Smart_pointers"><span class="nav-number">6.</span> <span class="nav-text">Smart pointers</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Lambdas"><span class="nav-number">7.</span> <span class="nav-text">Lambdas</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#non-member_begin()_and_end()"><span class="nav-number">8.</span> <span class="nav-text">non-member begin() and end()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Move_semantics"><span class="nav-number">9.</span> <span class="nav-text">Move semantics</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#static_assert_and_type_traits"><span class="nav-number">10.</span> <span class="nav-text">static_assert and type traits</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Override_and_final"><span class="nav-number">11.</span> <span class="nav-text">Override and final</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp;  2012 - 
+  2015
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">August</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.3"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.3"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.3" id="motion.global"></script>
+
+
+
+  <script type="text/javascript" src="/js/search-toggle.js"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.3" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"andyhui"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>
