@@ -24,7 +24,7 @@
 
 
 
-  <meta name="keywords" content="linux," />
+  <meta name="keywords" content="linux kernel,tcp," />
 
 
 
@@ -47,7 +47,7 @@
 
 
 
-  <title> linux常用命令-top // August' blog </title>
+  <title> tcp杂谈 // August' blog </title>
 </head>
 
 <body>
@@ -176,7 +176,7 @@
           
           
             
-              linux常用命令-top
+              tcp杂谈
             
           
         </h1>
@@ -184,14 +184,14 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015-05-26
+          发表于 2015-07-26
         </span>
 
         
           <span class="post-category">
             &nbsp; | &nbsp; 分类于
             
-              <a href="/categories/linux/">linux</a>
+              <a href="/categories/tcp-ip/">tcp/ip</a>
 
               
               
@@ -204,8 +204,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/05/26/linux-top/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/05/26/linux-top/"></span>
+            <a href="/2015/07/26/tcp杂谈/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/26/tcp杂谈/"></span>
             </a>
           </span>
           
@@ -219,13 +219,40 @@
       
 
       
-        <h3 id="top命令使用">top命令使用</h3><p>不多说，直接上例子：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">top -d 1 -p pid \[,pid...\]</span><br></pre></td></tr></table></figure></p>
-<p>其中d表示延迟多少，例子中表示延迟1秒，pid表示进程id号。<br>可以选择按用户查看内存使用，或者cpu使用情况，例如：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">top -u root</span><br></pre></td></tr></table></figure></p>
-<a id="more"></a>
-<p>常用的排序选项：<br>N：按pid排序<br>P：按cpu使用率从大到小<br>M：按内存使用率从大到小<br>T：按TIME+排序</p>
-<p>类似的静态查看内存使用状况的命令有：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pmap pid&#10;ps aux | grep processname</span><br></pre></td></tr></table></figure></p>
-<p>网上有这种写法的：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -eo &#39;pid,comm,args,pcpu,rsz,vsz,stime,user,uid&#39; | grep vmware |  sort -nrk5</span><br></pre></td></tr></table></figure></p>
-<p>其中sort的参数<br>n表示按照数值排序。<br>k5表示按第5列排序，这个例子中即rsz(实际内存)。<br>r表示按降序排，sort本来是按升序来排序的。用r参数表示按降序排。</p>
+        <h2 id="tcp可靠传输的策略">tcp可靠传输的策略</h2><ul>
+<li>超时重传机制</li>
+<li>有序的数据传输（保证数据丢失的处理）</li>
+<li>tcp检验</li>
+<li>确认机制</li>
+<li>窗口控制</li>
+<li>拥塞控制</li>
+</ul>
+<h2 id="Sequence_Number">Sequence Number</h2><ul>
+<li>取值范围是0-2**32-1.</li>
+<li><p>一个典型的sequence number包含以下三个作用：</p>
+<ul>
+<li>显示哪些是已经发出但是没有收到确认的数据包。</li>
+<li>确认哪些是已经发出并且已经收到确认的数据包。</li>
+<li>表明下一个希望收到数据包的序列号。<a id="more"></a>
+</li>
+</ul>
+</li>
+<li><p>Initial Sequence Number(ISN) Selection</p>
+<ul>
+<li>ISN是每四微妙增加自增１。因为最大是２**32-1，所以周期是4.55小时。只要保证MSL（Maximum Segment Lifetime）小于4.55小时。就不用到重复的ISN。</li>
+<li>每次建立都会产生一个ISS(initial send sequence number)和一个IRS(initial receive sequence number)三次握手会初始化ISN。</li>
+<li>三次握手是必须的，因为tcp不是用网络的全局时间。tcp有很多机制选择ISN。三次握手中，接受者(reveiver)是无法知道接收到的报文是否是延迟到达的，除非它记得上一次的sequence number。它必须要求对方来确认。</li>
+</ul>
+</li>
+</ul>
+<h2 id="处理大量的time_wait">处理大量的time_wait</h2><ul>
+<li>网上有的两种优化策略：设置tcp_tw_reuse和tcp_tw_recycle这两个参数。请慎重选择使用这两个参数，因为它们违反了tcp保证可靠连接的设计。特别是当使用tcp_tw_recycle这个参数的时候。因为设置了这两个参数后，kernel会去比较time_stamps。最后会出问题的，下一步，我会去分析”tcp_timewait_state_process”源代码。</li>
+</ul>
+<h2 id="tcp的拥塞处理">tcp的拥塞处理</h2><ul>
+<li>1）慢启动，2）拥塞避免</li>
+<li>1）快重传，２)快恢复</li>
+<li>TCP Vegas拥塞控制算法</li>
+</ul>
 
       
     </div>
@@ -234,7 +261,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/linux/"> #linux </a>
+            <a href="/tags/linux-kernel/"> #linux kernel </a>
+          
+            <a href="/tags/tcp/"> #tcp </a>
           
         </div>
       
@@ -243,13 +272,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/06/26/awk使用/">awk使用</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/04/19/shell-script-正则表达式/">shell script & 正则表达式</a>
+              <a href="/2015/07/07/c-11的几个新特性介绍/">c++11的几个新特性介绍</a>
             
           </div>
         </div>
@@ -269,8 +296,8 @@
     
       <div class="comments" id="comments">
         
-          <div class="ds-thread" data-thread-key="2015/05/26/linux-top/"
-               data-title="linux常用命令-top" data-url="http://yoursite.com/2015/05/26/linux-top/">
+          <div class="ds-thread" data-thread-key="2015/07/26/tcp杂谈/"
+               data-title="tcp杂谈" data-url="http://yoursite.com/2015/07/26/tcp杂谈/">
           </div>
         
       </div>
@@ -398,7 +425,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#top命令使用"><span class="nav-number">1.</span> <span class="nav-text">top命令使用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp可靠传输的策略"><span class="nav-number">1.</span> <span class="nav-text">tcp可靠传输的策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sequence_Number"><span class="nav-number">2.</span> <span class="nav-text">Sequence Number</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理大量的time_wait"><span class="nav-number">3.</span> <span class="nav-text">处理大量的time_wait</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp的拥塞处理"><span class="nav-number">4.</span> <span class="nav-text">tcp的拥塞处理</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
