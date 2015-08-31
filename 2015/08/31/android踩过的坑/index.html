@@ -209,9 +209,7 @@
 
       
         <h1 id="曾经遇到的问题以及解决办法">曾经遇到的问题以及解决办法</h1><ul>
-<li><p>问题：Unable to execute dex: java.nio.BufferOverflowException. Check the Eclipse log for stack trace.</p>
-<a id="more"></a>
-<p>Conversion to Dalvik format failed: Unable to execute dex: java.nio.BufferOverflowException. Check the Eclipse log for stack trace.</p>
+<li><p>问题：Unable to execute dex: java.nio.BufferOverflowException. Check the Eclipse log for stack trace.<br>Conversion to Dalvik format failed: Unable to execute dex: java.nio.BufferOverflowException. Check the Eclipse log for stack trace.</p>
 <ul>
 <li>最新的19版本会在你的项目下建立一个依赖包 Android Dependencies，在eclipse中右键这个文件夹，在Build Path选项中选择 remove it from build path。。。然后就没问题了。..</li>
 </ul>
@@ -247,7 +245,7 @@
 </li>
 <li><p>Activity启动后EditText是否自动弹出输入法虚拟键盘(软键盘)的问题</p>
 <ul>
-<li>在开发过程中，我们经常会碰到Activity中包含EditText控件时会自动弹出虚拟键盘的情形，其实这是由于EditText自动获得焦点的缘故，只要让EditText失去焦点就行了，解决办法如下：<br>1.在Manifest.xml文件中相应的Activity下添加如下代码即可：<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android:windowSoftInputMode=&#34;stateHidden&#34;</span><br></pre></td></tr></table></figure>
+<li>在开发过程中，我们经常会碰到Activity中包含EditText控件时会自动弹出虚拟键盘的情形，其实这是由于EditText自动获得焦点的缘故，只要让EditText失去焦点就行了，解决办法如下：<br>1.在Manifest.xml文件中相应的Activity下添加如下代码即可：  <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android:windowSoftInputMode=&#34;stateHidden&#34;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 </li>
@@ -261,7 +259,7 @@
 <li>主要是调整adapter包含的layout的行高</li>
 </ul>
 </li>
-<li>java.lang.ClassCastException:android.app.Application cannot be cast to greendroid.app.MyApplication<ul>
+<li>java.lang.ClassCastException: android.app.Application cannot be cast to greendroid.app.MyApplication<ul>
 <li>直接该<applicationandroid:name=".myapp">中的android:name</applicationandroid:name=".myapp"></li>
 </ul>
 </li>
