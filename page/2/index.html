@@ -178,6 +178,88 @@
           
           
             
+              <a class="post-title-link" href="/2012/07/23/为多态基类声明virtual析构函数/">
+                为多态基类声明virtual析构函数
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2012-07-23
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/编程语言/">编程语言</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2012/07/23/为多态基类声明virtual析构函数/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2012/07/23/为多态基类声明virtual析构函数/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h3 id="说明">说明</h3><p>这个问题在实践中偶尔会碰到，设计一个TimeKeeper基类和一些派生类来记录时间：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">class</span> TimeKeeper  </span><br><span class="line">&#123;  </span><br><span class="line">　 <span class="keyword">public</span>:  </span><br><span class="line">　　 TimeKeeper();  </span><br><span class="line">　　 ~TimeKeeper();　　  </span><br><span class="line">&#125;; </span><br><span class="line"><span class="keyword">class</span> AtomicClock: <span class="keyword">public</span> TimeKeeper &#123;&#125;; <span class="comment">//原子钟  </span></span><br><span class="line"><span class="keyword">class</span> WaterClock: <span class="keyword">public</span> TimeKeeper &#123;&#125;; <span class="comment">//水钟</span></span><br></pre></td></tr></table></figure>
+<p>在使用时，我们可能会使用factory工厂方法：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TimeKeeper* getTimeKeeper();<span class="comment">//返回一个指针，指向一个派生类的动态分配的对象 </span></span><br><span class="line">TimeKeeper* ptk = getTimeKeeper();<span class="comment">//从继承体系中得到一个动态分配对象</span></span><br><span class="line"><span class="keyword">delete</span> ptk;<span class="comment">//负责的删除它</span></span><br></pre></td></tr></table></figure></p>
+<p>删除的时候就会出现问题，因为ptk这个指针指向的是基类，那删除的指令会执行基类TimeKeeper的析构函数，该函数不是virtual函数。<br>在c++中，这样的情况下其删除行为没有被定义，一般会只删除基类的成分，而派生类的那些元素没有被删除，这就是形成资源泄露，败坏数据结构，在调试器上浪费很多时间的绝佳途径哦。<br>解决的方法就是定义一个基类的virtual析构函数，这样一来，删除行为就会在派生类中实现，不会只删除一部分。<br>一般来说，只要类中有virtual函数，就要定义一个virtual析构函数。不过，如果类中没有virtual函数，就不需要也不应该定义virtual析构函数，这样不仅没用，而且也会增加额外开支，且会产生很多的兼容性问题，因为virtual机制是c++特有的。<br>另外，c++中很多类的实现都是不带virtual的，比如：string，STL中的vector，list，set，trl：：unordered_map，如果继承它们很可能出现上述的错误，所以作者提醒大家：拒绝继承标准容器或者其它只有非virtual析构函数的类！<br>有时候你希望拥有抽象class，但手上没有任何pure virtual函数，怎么办？由于抽象class总是企图被当做一个base class来用，而又由于base class应该有一个virtual析构函数，并且由于pure virtual函数会导致抽象class，因此解决办法很简单：为你希望它成为抽象的那个class声明一个pure virtual析构函数。下面是例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Awov&#123;  </span><br><span class="line"><span class="keyword">public</span>:  </span><br><span class="line">  <span class="keyword">virtual</span> ~Awov() = <span class="number">0</span>;  </span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="总结">总结</h3><p>polymorphic base classes 应该声明一个virtual析构函数。如果class带有任何virtual函数，它就应该拥有一个virtual析构函数。<br>classes的设计目的如果不是作为base classes使用，或不是为了具备多态性质，就不应该声明virtual析构函数。</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2012/07/10/hello-world/">
                 Hello World
               </a>
@@ -289,7 +371,7 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-count">12</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

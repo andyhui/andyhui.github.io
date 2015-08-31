@@ -24,7 +24,7 @@
 
 
 
-  <meta name="keywords" content="linux kernel,tcp," />
+  <meta name="keywords" content="Hexo,next" />
 
 
 
@@ -47,7 +47,7 @@
 
 
 
-  <title> tcp杂谈 // August' blog </title>
+  <title> android踩过的坑 // August' blog </title>
 </head>
 
 <body>
@@ -176,7 +176,7 @@
           
           
             
-              tcp杂谈
+              android踩过的坑
             
           
         </h1>
@@ -184,28 +184,17 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015-07-26
+          发表于 2015-08-31
         </span>
 
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/tcp-ip/">tcp/ip</a>
-
-              
-              
-
-            
-          </span>
         
 
         
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/07/26/tcp杂谈/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/26/tcp杂谈/"></span>
+            <a href="/2015/08/31/android踩过的坑/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/31/android踩过的坑/"></span>
             </a>
           </span>
           
@@ -219,67 +208,78 @@
       
 
       
-        <h2 id="tcp可靠传输的策略">tcp可靠传输的策略</h2><ul>
-<li>超时重传机制</li>
-<li>有序传输（字节丢失的处理）</li>
-<li>tcp检验</li>
-<li>确认机制</li>
-<li>窗口控制</li>
-<li>拥塞控制</li>
-</ul>
-<h2 id="Sequence_Number">Sequence Number</h2><ul>
-<li>取值范围是0-2**32-1.</li>
-<li><p>一个典型的sequence number包含以下三个作用：</p>
+        <h1 id="曾经遇到的问题以及解决办法">曾经遇到的问题以及解决办法</h1><ul>
+<li><p>问题：Unable to execute dex: java.nio.BufferOverflowException. Check the Eclipse log for stack trace.<br>Conversion to Dalvik format failed: Unable to execute dex: java.nio.BufferOverflowException. Check the Eclipse log for stack trace.</p>
 <ul>
-<li>显示哪些是已经发出但是没有收到确认的数据包。</li>
-<li>确认哪些是已经发出并且已经收到确认的数据包。</li>
-<li>表明下一个希望收到数据包的序列号。<a id="more"></a>
-</li>
+<li>最新的19版本会在你的项目下建立一个依赖包 Android Dependencies，在eclipse中右键这个文件夹，在Build Path选项中选择 remove it from build path。。。然后就没问题了。..</li>
 </ul>
 </li>
-<li><p>Initial Sequence Number(ISN) Selection</p>
+<li><p>Can not run program “/ home / user / android-SDKs / platform-tools / adb”: error = 2, No such file or directory</p>
 <ul>
-<li>ISN是每四微妙增加自增１。因为最大是２**32-1，所以周期是4.55小时。只要保证MSL（Maximum Segment Lifetime）小于4.55小时。就不用到重复的ISN。</li>
-<li>每次建立都会产生一个ISS(initial send sequence number)和一个IRS(initial receive sequence number)三次握手会初始化ISN。</li>
-<li>三次握手是必须的，因为tcp不是用网络的全局时间。tcp有很多机制选择ISN。三次握手中，接受者(reveiver)是无法知道接收到的报文是否是延迟到达的，除非它记得上一次的sequence number。它必须要求对方来确认。</li>
+<li>Assuming that the system is installed the Android SDK and the file / home / user / android-sdks/platform-tools/adb there (where user is your user name), the problem may lie in the lack of 32-bit libraries on 64-bit system. Open a terminal and install the ia32-libs , which will join the necessary libraries:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ia32-libs</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
 </li>
 </ul>
-<h2 id="处理大量的time_wait">处理大量的time_wait</h2><ul>
-<li>网上有的两种优化策略：设置tcp_tw_reuse和tcp_tw_recycle这两个参数。请慎重选择使用这两个参数，因为它们违反了tcp保证可靠连接的设计。特别是当使用tcp_tw_recycle这个参数的时候。因为设置了这两个参数后，kernel会去比较time_stamps。最后会出问题的，下一步，我会去分析”tcp_timewait_state_process”源代码。</li>
+<ul>
+<li><p>解决windows与linux eclipse中文乱码问题：</p>
+<ol>
+<li>eclipse-&gt;Window-&gt;Preferences-&gt;General-&gt;Content Types，右侧选择Java Source File，然后在下面的defaut encoding中写入gbk，update即可。</li>
+<li>直接修改文件的字符编码方式</li>
+</ol>
+</li>
+<li><p>通过调整设置layout_weight参数来调整控件的位置</p>
+  <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#60;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&#62;&#10;&#60;LinearLayout xmlns:android=&#34;http://schemas.android.com/apk/res/android&#34;&#10;    android:orientation=&#34;vertical&#34;&#10;    android:layout_width=&#34;fill_parent&#34;&#10;    android:layout_height=&#34;fill_parent&#34;&#62;&#10;    &#10;    &#60;TextView android:text=&#34;welcome&#34; &#10;    android:id=&#34;@+id/TextView&#34; &#10;    android:layout_width=&#34;fill_parent&#34; &#10;    android:layout_height=&#34;0dip&#34;&#10;    android:layout_weight=&#34;1&#34;&#62;&#10;    &#60;/TextView&#62;&#10;    &#10;    &#60;LinearLayout android:id=&#34;@+id/LinearLayout&#34; &#10;    android:orientation=&#34;horizontal&#34;&#10;    android:layout_width=&#34;fill_parent&#34; &#10;    android:layout_height=&#34;wrap_content&#34;&#10;    android:layout_weight=&#34;0&#34;&#62;&#10;    &#10;    &#60;EditText android:id=&#34;@+id/EditText&#34; &#10;    android:layout_width=&#34;0dip&#34; &#10;    android:layout_height=&#34;wrap_content&#34;&#10;    android:layout_weight=&#34;1&#34;&#62;&#10;    &#60;/EditText&#62;&#10;    &#10;    &#60;Button android:text=&#34;label_submit_button&#34; &#10;    android:id=&#34;@+id/Button&#34; &#10;    android:layout_width=&#34;wrap_content&#34; &#10;    android:layout_height=&#34;wrap_content&#34;&#10;    android:layout_weight=&#34;0&#34;&#62;&#10;    &#60;/Button&#62;&#10;    &#10;    &#60;/LinearLayout&#62;&#10;    &#10;    &#60;/LinearLayout&#62;</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<h2 id="tcp的拥塞处理">tcp的拥塞处理</h2><ul>
-<li>1）慢启动，2）拥塞避免</li>
-<li>1）快重传，２)快恢复</li>
-<li>TCP Vegas拥塞控制算法</li>
+<ul>
+<li><p>设置界面参数的选择：</p>
+<ul>
+<li>为了使用户界面能够在现在和将来的显示器类型上正常显示，建议大家始终使用sp作为文字大小的单位，将dip作为其他元素的单位。当然，也可以考虑使用矢量图形，而不是用位图</li>
 </ul>
-<p>＝＝待续</p>
+</li>
+<li><p>android:layout_gravity 和 android:gravity 的区别</p>
+<ul>
+<li>从名字上可以看到，android:gravity是对元素本身说的，元素本身的文本显示在什么地方靠着换个属性设置，不过不设置默认是在左侧的。<br>android:layout_gravity是相对与它的父元素说的，说明元素显示在父元素的什么位置。<br>比如说button： android:layout_gravity 表示按钮在界面上的位置。 android:gravity表示button上的字在button上的位置。<br>top bottom left right center_vertical center_horizontal center fill<br>对于 LinearLayout<br>当 android:orientation=”vertical”  时， 只有水平方向的设置才起作用，垂直方向的设置不起作用。即：left，right，center_horizontal 是生效的。<br>当 android:orientation=”horizontal” 时， 只有垂直方向的设置才起作用，水平方向的设置不起作用。即：top，bottom，center_vertical 是生效的。</li>
+</ul>
+</li>
+<li><p>Activity启动后EditText是否自动弹出输入法虚拟键盘(软键盘)的问题</p>
+<ul>
+<li>在开发过程中，我们经常会碰到Activity中包含EditText控件时会自动弹出虚拟键盘的情形，其实这是由于EditText自动获得焦点的缘故，只要让EditText失去焦点就行了，解决办法如下：<br>1.在Manifest.xml文件中相应的Activity下添加如下代码即可：<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android:windowSoftInputMode=&#34;stateHidden&#34;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>调整ListView分割线<ul>
+<li>主要用以下2个属性来调整<br>android:divider=”@drawable/line” 可以是图片可以是颜色<br>android:dividerHeight=”3px”  数量单位</li>
+</ul>
+</li>
+<li>调整ListView行高<ul>
+<li>主要是调整adapter包含的layout的行高</li>
+</ul>
+</li>
+<li>java.lang.ClassCastException: android.app.Application cannot be cast to greendroid.app.MyApplication<ul>
+<li>直接该<applicationandroid:name=".myapp">中的android:name</applicationandroid:name=".myapp"></li>
+</ul>
+</li>
+</ul>
 
       
     </div>
 
     <div class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/linux-kernel/"> #linux kernel </a>
-          
-            <a href="/tags/tcp/"> #tcp </a>
-          
-        </div>
-      
 
       
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/08/31/java-spring/">java_spring</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/07/07/c-11的几个新特性介绍/">c++11的几个新特性介绍</a>
+              <a href="/2015/08/31/java-spring/">java_spring</a>
             
           </div>
         </div>
@@ -299,8 +299,8 @@
     
       <div class="comments" id="comments">
         
-          <div class="ds-thread" data-thread-key="2015/07/26/tcp杂谈/"
-               data-title="tcp杂谈" data-url="http://yoursite.com/2015/07/26/tcp杂谈/">
+          <div class="ds-thread" data-thread-key="2015/08/31/android踩过的坑/"
+               data-title="android踩过的坑" data-url="http://yoursite.com/2015/08/31/android踩过的坑/">
           </div>
         
       </div>
@@ -428,7 +428,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp可靠传输的策略"><span class="nav-number">1.</span> <span class="nav-text">tcp可靠传输的策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sequence_Number"><span class="nav-number">2.</span> <span class="nav-text">Sequence Number</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理大量的time_wait"><span class="nav-number">3.</span> <span class="nav-text">处理大量的time_wait</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp的拥塞处理"><span class="nav-number">4.</span> <span class="nav-text">tcp的拥塞处理</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#曾经遇到的问题以及解决办法"><span class="nav-number">1.</span> <span class="nav-text">曾经遇到的问题以及解决办法</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>

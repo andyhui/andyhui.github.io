@@ -178,6 +178,127 @@
           
           
             
+              <a class="post-title-link" href="/2015/08/31/android踩过的坑/">
+                android踩过的坑
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015-08-31
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/08/31/android踩过的坑/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/31/android踩过的坑/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="曾经遇到的问题以及解决办法">曾经遇到的问题以及解决办法</h1><ul>
+<li><p>问题：Unable to execute dex: java.nio.BufferOverflowException. Check the Eclipse log for stack trace.<br>Conversion to Dalvik format failed: Unable to execute dex: java.nio.BufferOverflowException. Check the Eclipse log for stack trace.</p>
+<ul>
+<li>最新的19版本会在你的项目下建立一个依赖包 Android Dependencies，在eclipse中右键这个文件夹，在Build Path选项中选择 remove it from build path。。。然后就没问题了。..</li>
+</ul>
+</li>
+<li><p>Can not run program “/ home / user / android-SDKs / platform-tools / adb”: error = 2, No such file or directory</p>
+<ul>
+<li>Assuming that the system is installed the Android SDK and the file / home / user / android-sdks/platform-tools/adb there (where user is your user name), the problem may lie in the lack of 32-bit libraries on 64-bit system. Open a terminal and install the ia32-libs , which will join the necessary libraries:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ia32-libs</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>解决windows与linux eclipse中文乱码问题：</p>
+<ol>
+<li>eclipse-&gt;Window-&gt;Preferences-&gt;General-&gt;Content Types，右侧选择Java Source File，然后在下面的defaut encoding中写入gbk，update即可。</li>
+<li>直接修改文件的字符编码方式</li>
+</ol>
+</li>
+<li><p>通过调整设置layout_weight参数来调整控件的位置</p>
+  <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#60;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&#62;&#10;&#60;LinearLayout xmlns:android=&#34;http://schemas.android.com/apk/res/android&#34;&#10;    android:orientation=&#34;vertical&#34;&#10;    android:layout_width=&#34;fill_parent&#34;&#10;    android:layout_height=&#34;fill_parent&#34;&#62;&#10;    &#10;    &#60;TextView android:text=&#34;welcome&#34; &#10;    android:id=&#34;@+id/TextView&#34; &#10;    android:layout_width=&#34;fill_parent&#34; &#10;    android:layout_height=&#34;0dip&#34;&#10;    android:layout_weight=&#34;1&#34;&#62;&#10;    &#60;/TextView&#62;&#10;    &#10;    &#60;LinearLayout android:id=&#34;@+id/LinearLayout&#34; &#10;    android:orientation=&#34;horizontal&#34;&#10;    android:layout_width=&#34;fill_parent&#34; &#10;    android:layout_height=&#34;wrap_content&#34;&#10;    android:layout_weight=&#34;0&#34;&#62;&#10;    &#10;    &#60;EditText android:id=&#34;@+id/EditText&#34; &#10;    android:layout_width=&#34;0dip&#34; &#10;    android:layout_height=&#34;wrap_content&#34;&#10;    android:layout_weight=&#34;1&#34;&#62;&#10;    &#60;/EditText&#62;&#10;    &#10;    &#60;Button android:text=&#34;label_submit_button&#34; &#10;    android:id=&#34;@+id/Button&#34; &#10;    android:layout_width=&#34;wrap_content&#34; &#10;    android:layout_height=&#34;wrap_content&#34;&#10;    android:layout_weight=&#34;0&#34;&#62;&#10;    &#60;/Button&#62;&#10;    &#10;    &#60;/LinearLayout&#62;&#10;    &#10;    &#60;/LinearLayout&#62;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>设置界面参数的选择：</p>
+<ul>
+<li>为了使用户界面能够在现在和将来的显示器类型上正常显示，建议大家始终使用sp作为文字大小的单位，将dip作为其他元素的单位。当然，也可以考虑使用矢量图形，而不是用位图</li>
+</ul>
+</li>
+<li><p>android:layout_gravity 和 android:gravity 的区别</p>
+<ul>
+<li>从名字上可以看到，android:gravity是对元素本身说的，元素本身的文本显示在什么地方靠着换个属性设置，不过不设置默认是在左侧的。<br>android:layout_gravity是相对与它的父元素说的，说明元素显示在父元素的什么位置。<br>比如说button： android:layout_gravity 表示按钮在界面上的位置。 android:gravity表示button上的字在button上的位置。<br>top bottom left right center_vertical center_horizontal center fill<br>对于 LinearLayout<br>当 android:orientation=”vertical”  时， 只有水平方向的设置才起作用，垂直方向的设置不起作用。即：left，right，center_horizontal 是生效的。<br>当 android:orientation=”horizontal” 时， 只有垂直方向的设置才起作用，水平方向的设置不起作用。即：top，bottom，center_vertical 是生效的。</li>
+</ul>
+</li>
+<li><p>Activity启动后EditText是否自动弹出输入法虚拟键盘(软键盘)的问题</p>
+<ul>
+<li>在开发过程中，我们经常会碰到Activity中包含EditText控件时会自动弹出虚拟键盘的情形，其实这是由于EditText自动获得焦点的缘故，只要让EditText失去焦点就行了，解决办法如下：<br>1.在Manifest.xml文件中相应的Activity下添加如下代码即可：<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android:windowSoftInputMode=&#34;stateHidden&#34;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>调整ListView分割线<ul>
+<li>主要用以下2个属性来调整<br>android:divider=”@drawable/line” 可以是图片可以是颜色<br>android:dividerHeight=”3px”  数量单位</li>
+</ul>
+</li>
+<li>调整ListView行高<ul>
+<li>主要是调整adapter包含的layout的行高</li>
+</ul>
+</li>
+<li>java.lang.ClassCastException: android.app.Application cannot be cast to greendroid.app.MyApplication<ul>
+<li>直接该<applicationandroid:name=".myapp">中的android:name</applicationandroid:name=".myapp"></li>
+</ul>
+</li>
+</ul>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/08/31/java-spring/">
                 java_spring
               </a>
@@ -916,88 +1037,6 @@
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2012/07/23/为多态基类声明virtual析构函数/">
-                为多态基类声明virtual析构函数
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于 2012-07-23
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分类于
-            
-              <a href="/categories/编程语言/">编程语言</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2012/07/23/为多态基类声明virtual析构函数/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2012/07/23/为多态基类声明virtual析构函数/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h3 id="说明">说明</h3><p>这个问题在实践中偶尔会碰到，设计一个TimeKeeper基类和一些派生类来记录时间：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">class</span> TimeKeeper  </span><br><span class="line">&#123;  </span><br><span class="line">　 <span class="keyword">public</span>:  </span><br><span class="line">　　 TimeKeeper();  </span><br><span class="line">　　 ~TimeKeeper();　　  </span><br><span class="line">&#125;; </span><br><span class="line"><span class="keyword">class</span> AtomicClock: <span class="keyword">public</span> TimeKeeper &#123;&#125;; <span class="comment">//原子钟  </span></span><br><span class="line"><span class="keyword">class</span> WaterClock: <span class="keyword">public</span> TimeKeeper &#123;&#125;; <span class="comment">//水钟</span></span><br></pre></td></tr></table></figure>
-<p>在使用时，我们可能会使用factory工厂方法：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TimeKeeper* getTimeKeeper();<span class="comment">//返回一个指针，指向一个派生类的动态分配的对象 </span></span><br><span class="line">TimeKeeper* ptk = getTimeKeeper();<span class="comment">//从继承体系中得到一个动态分配对象</span></span><br><span class="line"><span class="keyword">delete</span> ptk;<span class="comment">//负责的删除它</span></span><br></pre></td></tr></table></figure></p>
-<p>删除的时候就会出现问题，因为ptk这个指针指向的是基类，那删除的指令会执行基类TimeKeeper的析构函数，该函数不是virtual函数。<br>在c++中，这样的情况下其删除行为没有被定义，一般会只删除基类的成分，而派生类的那些元素没有被删除，这就是形成资源泄露，败坏数据结构，在调试器上浪费很多时间的绝佳途径哦。<br>解决的方法就是定义一个基类的virtual析构函数，这样一来，删除行为就会在派生类中实现，不会只删除一部分。<br>一般来说，只要类中有virtual函数，就要定义一个virtual析构函数。不过，如果类中没有virtual函数，就不需要也不应该定义virtual析构函数，这样不仅没用，而且也会增加额外开支，且会产生很多的兼容性问题，因为virtual机制是c++特有的。<br>另外，c++中很多类的实现都是不带virtual的，比如：string，STL中的vector，list，set，trl：：unordered_map，如果继承它们很可能出现上述的错误，所以作者提醒大家：拒绝继承标准容器或者其它只有非virtual析构函数的类！<br>有时候你希望拥有抽象class，但手上没有任何pure virtual函数，怎么办？由于抽象class总是企图被当做一个base class来用，而又由于base class应该有一个virtual析构函数，并且由于pure virtual函数会导致抽象class，因此解决办法很简单：为你希望它成为抽象的那个class声明一个pure virtual析构函数。下面是例子：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Awov&#123;  </span><br><span class="line"><span class="keyword">public</span>:  </span><br><span class="line">  <span class="keyword">virtual</span> ~Awov() = <span class="number">0</span>;  </span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="总结">总结</h3><p>polymorphic base classes 应该声明一个virtual析构函数。如果class带有任何virtual函数，它就应该拥有一个virtual析构函数。<br>classes的设计目的如果不是作为base classes使用，或不是为了具备多态性质，就不应该声明virtual析构函数。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -1036,7 +1075,7 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-count">12</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
