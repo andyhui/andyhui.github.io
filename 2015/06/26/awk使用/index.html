@@ -263,7 +263,7 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -n | awk &#39;/^tcp/ &#123;if($3&#62;0)&#123;print $0&#125; &#125;&#39;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>用awk编程,打印tcp状态</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -n | awk &#39;/^tcp/&#123;s[$NF]++&#125;END&#123;for(a in s) print $1,a&#125;&#39;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -n | awk &#39;/^tcp/&#123;S[$NF]++&#125;END&#123;for(i in S) print i,S[i]&#125;&#39;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h2 id="总结">总结</h2><p>awk是一种奇妙的文本处理可编程工具语言。</p>
